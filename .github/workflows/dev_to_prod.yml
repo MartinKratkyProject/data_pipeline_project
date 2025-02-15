@@ -1,21 +1,21 @@
 # This action controls the deployment to prod branch. 
 # It triggers whenever something is pushed to prod branch (either it is a new commit or it is a merge request from lower branches (dev))
-# It only passes the merge requests. No direct pushes to prod are allowed and will be stoped!
+# It only passes the merge requests. No direct pushes to prod are allowed and will be stopped!
 
 name: dev_to_prod
 
 on:
     push:
         branches:
-            - "main" # Specific branch and operation. IN this case, push to prod branch.
+            - "main" # Trigger this on push to the prod branch (main).
     
     workflow_dispatch: # Allow manual triggering from the Actions tab if needed. By default, this action runs automatically whenever something is pushed to prod branch.
 
 jobs:
     build:
-        runs-on: ubuntu_latest
+        runs-on: ubuntu-latest
 
-        # Define variables here
+        # Define environment variables here
         env:
             push_to_prod: "false" # If push_to_prod = false, all direct pushes to prod branch will be stopped.
 
@@ -30,15 +30,17 @@ jobs:
                 COMMIT_MSG=$(git log -1 --pretty=%B)
                 echo "Last commit message: $COMMIT_MSG"
 
-                if [[ "$COMMIT_MSG" != "Merge branch"*]]; then
+                # Check if the commit message is not a merge commit (no "Merge branch" in the message)
+                if [[ "$COMMIT_MSG" != "Merge branch"* ]]; then
+                    # If it's not a merge and push_to_prod is false, block the direct push to prod
                     if [[ "$push_to_prod" == "false" ]]; then
-                        echo "Direct push to prod branch is disabled. Please use a merge from lower lever branch (dev)."
-                        exit 1
+                        echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
+                        exit 1  # Exit the workflow, preventing the push
                     fi
                 else
                     echo "This is a merge commit, continuing the workflow..."
                 fi
-            
+
             - name: Run the build process
               run: |
                 echo "Running the deploy to prod process..."
