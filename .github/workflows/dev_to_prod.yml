@@ -1,5 +1,5 @@
-# This action controls the deployment to prod branch. 
-# It triggers whenever something is pushed to prod branch (either it is a new commit or it is a merge request from lower branches (dev))
+# This action controls the deployment to prod branch.
+# It triggers whenever something is pushed to the prod branch (either it is a new commit or it is a merge request from lower branches (dev))
 # It only passes the merge requests. No direct pushes to prod are allowed and will be stopped!
 
 name: dev_to_prod
@@ -27,16 +27,21 @@ jobs:
               run: |
                 echo "Checking if this is a merge request or direct push..."
                 
-                # Check if the GitHub event is a pull request merge (not a direct push)
-                if [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" != "refs/heads/main" ]]; then
-                    echo "This is a direct push to prod branch, which is not allowed."
-                    exit 1
+                # Check the context of the push event
+                if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+                    # If the event is a push to main, it's a direct push
+                    if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+                        # This is a direct push to `main`, and we're blocking it.
+                        echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
+                        exit 1
+                    fi
                 fi
 
-                # If the commit is a merge commit, the GitHub context provides information about the PR
+                # If the event is a pull request (merge), proceed
                 if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
                     echo "This is a merge commit from a PR, continuing the workflow..."
                 else
+                    # This is an invalid push, exit
                     echo "This is a direct push, which is blocked."
                     exit 1
                 fi
