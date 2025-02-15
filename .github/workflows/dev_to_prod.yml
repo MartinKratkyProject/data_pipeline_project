@@ -26,19 +26,19 @@ jobs:
             - name: Check if this is a direct push to prod branch or merge request
               run: |
                 echo "Checking if this is a merge request or direct push..."
-                # Get the commit message to check if it contains a merge message
-                COMMIT_MSG=$(git log -1 --pretty=%B)
-                echo "Last commit message: $COMMIT_MSG"
+                
+                # Check if the GitHub event is a pull request merge (not a direct push)
+                if [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" != "refs/heads/main" ]]; then
+                    echo "This is a direct push to prod branch, which is not allowed."
+                    exit 1
+                fi
 
-                # Check if the commit message is not a merge commit (no "Merge branch" in the message)
-                if [[ "$COMMIT_MSG" != "Merge branch"* ]]; then
-                    # If it's not a merge and push_to_prod is false, block the direct push to prod
-                    if [[ "$push_to_prod" == "false" ]]; then
-                        echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
-                        exit 1  # Exit the workflow, preventing the push
-                    fi
+                # If the commit is a merge commit, the GitHub context provides information about the PR
+                if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+                    echo "This is a merge commit from a PR, continuing the workflow..."
                 else
-                    echo "This is a merge commit, continuing the workflow..."
+                    echo "This is a direct push, which is blocked."
+                    exit 1
                 fi
 
             - name: Run the build process
