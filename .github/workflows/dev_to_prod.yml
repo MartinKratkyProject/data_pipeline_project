@@ -1,32 +1,44 @@
+# This action controls the deployment to prod branch. 
+# It triggers whenever something is pushed to prod branch (either it is a new commit or it is a merge request from lower branches (dev))
+# It only passes the merge requests. No direct pushes to prod are allowed and will be stoped!
+
 name: dev_to_prod
 
 on:
-  push:
-    branches:
-      - "main"
-    # You can add a filter for merge commits (those with "Merge branch" in the commit message)
-    # This ensures the action only triggers for merges
-    # We'll use a `if` condition to filter merge commits
-
-  workflow_dispatch:  # Allows you to manually trigger the workflow from the Actions tab
+    push:
+        branches:
+            - "main" # Specific branch and operation. IN this case, push to prod branch.
+    
+    workflow_dispatch: # Allow manual triggering from the Actions tab if needed. By default, this action runs automatically whenever something is pushed to prod branch.
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu_latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+        # Define variables here
+        env:
+            push_to_prod: "false" # If push_to_prod = false, all direct pushes to prod branch will be stopped.
 
-      - name: Check if the commit is a merge commit
-        run: |
-          if [[ $(git log -1 --pretty=%B) != "Merge branch"* ]]; then
-            echo "This is not a merge commit. Exiting."
-            exit 0
-          fi
-          echo "This is a merge commit, continuing the process..."
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+            - name: Check if this is a direct push to prod branch or merge request
+              run: |
+                echo "Checking if this is a merge request or direct push..."
+                # Get the commit message to check if it contains a merge message
+                COMMIT_MSG=$(git log -1 --pretty=%B)
+                echo "Last commit message: $COMMIT_MSG"
+
+                if [[ "$COMMIT_MSG" != "Merge branch"*]]; then
+                    if [[ "$push_to_prod" == "false" ]]; then
+                        echo "Direct push to prod branch is disabled. Please use a merge from lower lever branch (dev)."
+                        exit 1
+                    fi
+                else
+                    echo "This is a merge commit, continuing the workflow..."
+                fi
+            
+            - name: Run the build process
+              run: |
+                echo "Running the deploy to prod process..."
