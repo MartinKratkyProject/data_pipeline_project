@@ -1,0 +1,32 @@
+name: dev_to_prod
+
+on:
+  push:
+    branches:
+      - "main"
+    # You can add a filter for merge commits (those with "Merge branch" in the commit message)
+    # This ensures the action only triggers for merges
+    # We'll use a `if` condition to filter merge commits
+
+  workflow_dispatch:  # Allows you to manually trigger the workflow from the Actions tab
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if the commit is a merge commit
+        run: |
+          if [[ $(git log -1 --pretty=%B) != "Merge branch"* ]]; then
+            echo "This is not a merge commit. Exiting."
+            exit 0
+          fi
+          echo "This is a merge commit, continuing the process..."
+
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
