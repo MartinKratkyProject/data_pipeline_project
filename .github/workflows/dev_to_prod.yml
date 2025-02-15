@@ -22,7 +22,7 @@ jobs:
             - name: Check if this is a direct push to prod branch or merge request
               run: |
                 echo "Checking if this is a merge request or direct push..."
-
+                
                 # Get the GitHub event name and ref for the current event.
                 EVENT_NAME="$GITHUB_EVENT_NAME"
                 REF_NAME="$GITHUB_REF"
@@ -32,19 +32,17 @@ jobs:
 
                 # Check if the event is a push to main (direct push to prod)
                 if [[ "$EVENT_NAME" == "push" && "$REF_NAME" == "refs/heads/main" ]]; then
-                    # Check if it is a direct push to the prod branch
-                    if [[ "$push_to_prod" == "false" ]]; then
+                    # Check the latest commit if it's a merge commit (from PR)
+                    COMMIT_MSG=$(git log -1 --pretty=%B)
+                    echo "Last commit message: $COMMIT_MSG"
+                    
+                    if [[ "$COMMIT_MSG" != "Merge branch"* ]]; then
+                        # If it's not a merge commit and push_to_prod is false, block the direct push to prod
                         echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
                         exit 1  # Exit the workflow to block the push
+                    else
+                        echo "This is a merge commit, continuing the workflow..."
                     fi
-                fi
-
-                # Now, handle merge commits: these are valid only if they are from a PR
-                if [[ "$EVENT_NAME" == "pull_request" || "$GITHUB_HEAD_REF" != "" ]]; then
-                    echo "This is a merge commit from a PR, continuing the workflow..."
-                else
-                    echo "This is an invalid push, blocked."
-                    exit 1  # Block the direct push
                 fi
 
             - name: Run the build process
