@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  # Trigger only on push to the dev branch
+  push:
+    branches: [ "dev" ]
+
+  # Allows manual triggering from the Actions tab if needed
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run a one-line script
+        run: echo Hello from the dev branch CI pipeline!
+
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
