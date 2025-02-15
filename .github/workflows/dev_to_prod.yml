@@ -1,15 +1,11 @@
-# This action controls the deployment to prod branch.
-# It triggers whenever something is pushed to the prod branch (either it is a new commit or it is a merge request from lower branches (dev))
-# It only passes the merge requests. No direct pushes to prod are allowed and will be stopped!
-
 name: dev_to_prod
 
 on:
     push:
         branches:
-            - "main" # Trigger this on push to the prod branch (main).
+            - "main"  # Trigger on push to the prod branch (main).
     
-    workflow_dispatch: # Allow manual triggering from the Actions tab if needed. By default, this action runs automatically whenever something is pushed to prod branch.
+    workflow_dispatch:  # Allow manual triggering from the Actions tab if needed.
 
 jobs:
     build:
@@ -17,7 +13,7 @@ jobs:
 
         # Define environment variables here
         env:
-            push_to_prod: "false" # If push_to_prod = false, all direct pushes to prod branch will be stopped.
+            push_to_prod: "false"  # If push_to_prod = false, direct pushes to prod branch will be blocked.
 
         steps:
             - name: Checkout code
@@ -26,24 +22,29 @@ jobs:
             - name: Check if this is a direct push to prod branch or merge request
               run: |
                 echo "Checking if this is a merge request or direct push..."
-                
-                # Check the context of the push event
-                if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
-                    # If the event is a push to main, it's a direct push
-                    if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
-                        # This is a direct push to `main`, and we're blocking it.
+
+                # Get the GitHub event name and ref for the current event.
+                EVENT_NAME="$GITHUB_EVENT_NAME"
+                REF_NAME="$GITHUB_REF"
+
+                echo "Event Name: $EVENT_NAME"
+                echo "Ref: $REF_NAME"
+
+                # Check if the event is a push to main (direct push to prod)
+                if [[ "$EVENT_NAME" == "push" && "$REF_NAME" == "refs/heads/main" ]]; then
+                    # Check if it is a direct push to the prod branch
+                    if [[ "$push_to_prod" == "false" ]]; then
                         echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
-                        exit 1
+                        exit 1  # Exit the workflow to block the push
                     fi
                 fi
 
-                # If the event is a pull request (merge), proceed
-                if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+                # Now, handle merge commits: these are valid only if they are from a PR
+                if [[ "$EVENT_NAME" == "pull_request" || "$GITHUB_HEAD_REF" != "" ]]; then
                     echo "This is a merge commit from a PR, continuing the workflow..."
                 else
-                    # This is an invalid push, exit
-                    echo "This is a direct push, which is blocked."
-                    exit 1
+                    echo "This is an invalid push, blocked."
+                    exit 1  # Block the direct push
                 fi
 
             - name: Run the build process
