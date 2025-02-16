@@ -26,11 +26,22 @@ jobs:
                 # Get the GitHub event name and ref for the current event.
                 EVENT_NAME="$GITHUB_EVENT_NAME"
                 REF_NAME="$GITHUB_REF"
-                HEAD_NAME="$GITHUB_HEAD_REF"
+                BASE_REF="$GITHUB_BASE_REF"
 
                 echo "Event Name: $EVENT_NAME"
                 echo "Ref: $REF_NAME"
-                echo "Head: $HEAD_NAME"
+                echo "Base Ref: $BASE_REF"
+
+                if [[ "$EVENT_NAME" == "push" && "$REF_NAME" == "refs/heads/main" ]]; then
+                  if [[ -n "$BASE_REF" ]]; then
+                    # Merge request from another branch to main
+                    echo "This is a merge commit from a PR, continuing the workflow..."
+                  else
+                    # Direct push to main
+                    echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
+                    exit 1
+                  fi
+                fi
 
             - name: Run the build process
               run: |
