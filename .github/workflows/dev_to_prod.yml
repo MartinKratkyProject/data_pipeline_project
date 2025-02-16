@@ -26,9 +26,11 @@ jobs:
                 # Get the GitHub event name and ref for the current event.
                 EVENT_NAME="$GITHUB_EVENT_NAME"
                 REF_NAME="$GITHUB_REF"
+                HEAD_NAME="$GITHUB_HEAD_REF"
 
                 echo "Event Name: $EVENT_NAME"
                 echo "Ref: $REF_NAME"
+                echo "Head: $HEAD_NAME"
 
             - name: Run the build process
               run: |
