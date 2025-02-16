@@ -32,15 +32,23 @@ jobs:
                 echo "Ref: $REF_NAME"
                 echo "Base Ref: $BASE_REF"
 
-                if [[ "$EVENT_NAME" == "push" && "$REF_NAME" == "refs/heads/main" ]]; then
-                  if [[ -n "$BASE_REF" ]]; then
-                    # Merge request from another branch to main
-                    echo "This is a merge commit from a PR, continuing the workflow..."
-                  else
-                    # Direct push to main
-                    echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
-                    exit 1
-                  fi
+                if [[ -n "${github.event.pull_request}" ]]; then
+                    echo This is good
+                    echo ${github.event.pull_request}
+                else
+                    echo This is bad
+                    echo ${github.event.pull_request}
+                fi
+
+                if [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" == "refs/heads/main" ]]; then
+                    if [[ -n "${github.event.pull_request}" ]]; then
+                        # Merge request from another branch to main
+                        echo "This is a merge commit from a PR, continuing the workflow..."
+                    else
+                        # Direct push to main
+                        echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
+                        exit 1
+                    fi
                 fi
 
             - name: Run the build process
