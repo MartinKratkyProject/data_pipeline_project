@@ -22,25 +22,6 @@ jobs:
         run: |
           echo "Checking if this is a merge request or direct push..."
 
-          # Get the GitHub event payload
-          EVENT_NAME="$GITHUB_EVENT_NAME"
-          REF_NAME="$GITHUB_REF"
-          BASE_REF=$(jq -r '.base_ref // empty' "$GITHUB_EVENT_PATH")
-
-          echo "Event Name: $EVENT_NAME"
-          echo "Ref: $REF_NAME"
-          echo "Base Ref: $BASE_REF"
-
-          # Check if it's a merge commit (from a PR)
-          if [[ "$EVENT_NAME" == "push" && "$REF_NAME" == "refs/heads/main" ]]; then
-            if [[ -n "$BASE_REF" ]]; then
-              echo "This is a merge commit from a PR (base ref: $BASE_REF). Continuing the workflow..."
-            else
-              echo "Direct push to prod branch is disabled. Please use a merge from a lower-level branch (dev)."
-              exit 1
-            fi
-          fi
-
       - name: Run the build process
         run: |
           echo "Running the deploy to prod process..."
