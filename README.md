@@ -2,9 +2,9 @@
 
 This is a data pipeline project.
 
-1. Select the purpouse of this project. (What data will I gather...)    |  ETA - 23.2.  Done
-2. Find a good source of data (.csv, .excl, url).                       |  ETA - 2.3.   In Progress
-3. Set up airflow for scheduling ETL/ELT pipelines.               |               Done
+1. Select the purpouse of this project. (What data will I gather...)    |  ETA - 23.2.  Done 18.2.
+2. Find a good source of data (.csv, .excl, url).                       |  ETA - 2.3.   Done 18.2.
+3. Set up airflow for scheduling ETL/ELT pipelines.                     |               Done 9.2. 
     - set up docker                                                     
         - set up WSL2
 4. Store data in PostgreSQL DB.                                         |  ETA - 9.3.
