@@ -13,6 +13,7 @@ This is a data pipeline project.
     PREPARATION: 
         -   both services (airflow and postgres) will run on separate containers using docker. 
         -   docker-compose.yaml: The first step will be creating a docker-compose.yaml file with 3 services - postgres, airflow and additional pgAdmin. 
+        -   NOTE: probably the backend and frontend applications will be running on separate containers. 
     PREREQUISITIES: 
         -   create a new empty folders in D: disk for storing the data from postgres. Volumes in yaml file will be bind to these files (one folder might be enought).
 
