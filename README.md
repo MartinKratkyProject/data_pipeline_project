@@ -7,7 +7,7 @@ This is a data pipeline project.
 3. Set up airflow for scheduling ETL/ELT pipelines.                     |               Done 9.2. 
     -   set up docker                                                     
         -   set up WSL2
-4. Store data in PostgreSQL DB.                                         |  ETA - 9.3.
+4. Store data in PostgreSQL DB.                                         |  ETA - 9.3.   Done 23.2.
     -   set up PostgreSQL DB.
 
     PREPARATION: 
@@ -25,3 +25,13 @@ This is a data pipeline project.
 7. Prepare frontend appliation with .Vue                                |  ETA - 4.5.
 8. Test project                                                         |  ETA - 25.5.
 9. Deploy project into www.                                             |  ETA - 8.6.
+
+
+# ------------------------------------- DOCUMENTATION -------------------------------------
+
+1. The purpose of this project is the demonstration of using different data engineering platforms in a single env, creating a robust and scalable structure for web designed app.
+The app is meant to provide latest stock market data in forms of meaningful visualization.
+
+2. For the stock market data, I choose to go with https://polygon.io/. Polygon web site provides large sets of different investment data. I decided to use data getting from 
+available polygon API. 
+
