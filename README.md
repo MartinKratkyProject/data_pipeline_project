@@ -17,7 +17,7 @@ This is a data pipeline project.
     PREREQUISITIES: 
         -   create a new empty folders in D: disk for storing the data from postgres. Volumes in yaml file will be bind to these files (one folder might be enought).
 
-5. Test ETL/ELT pipelines.                                              |  ETA - 23.3.
+5. Test ETL/ELT pipelines.                                              |  ETA - 23.3.  Done 27.2.
 6. Prepare Flask application for backend.                               |  ETA - 6.4.
     -   set up flask application in python
     -   create connection with backend and database
