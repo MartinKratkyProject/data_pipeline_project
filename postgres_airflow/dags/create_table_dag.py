@@ -11,7 +11,7 @@ default_args = {
 
 def create_table():
     conn = psycopg2.connect(
-        dbname="airflow", 
+        dbname="postgres", 
         user="airflow",
         password="airflow",
         host="postgres",
@@ -20,17 +20,22 @@ def create_table():
     
     cur = conn.cursor()
     
-    create_table_sql = """
-        CREATE TABLE IF NOT EXISTS my_table (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100),
-            age INT
-        );
-    """
+    # create_table_sql = """
+    #     CREATE TABLE IF NOT EXISTS my_table (
+    #         id SERIAL PRIMARY KEY,
+    #         name VARCHAR(100),
+    #         age INT
+    #     );
+    # """
+    # cur.execute(create_table_sql)
+    # conn.commit()
 
-    cur.execute(create_table_sql)
-    
-    conn.commit()
+    select_query = "SELECT * FROM my_table;"
+
+    cur.execute(select_query)
+    results = cur.fetchall()
+    for row in results:
+        print(row)
     
     cur.close()
     conn.close()
