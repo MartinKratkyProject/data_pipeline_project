@@ -4,6 +4,8 @@ import psycopg2
 import pandas as pd
 from airflow.operators.python import PythonOperator
 import os
+from polygon import RESTClient
+from sqlalchemy import create_engine
 
 default_args = {
     'owner': 'admin',
@@ -15,34 +17,44 @@ default_args = {
 
 # function for creating a connection to postgres
 def create_connection_to_postgres():
-    conn = psycopg2.connect(
-        dbname="postgres", 
-        user="airflow",
-        password="airflow",
-        host="postgres",
-        port="5432",
-    )
+    postgres_connection_string = 'postgresql+psycopg2://airflow:airflow@postgres:5432/postgres'
+    engine = create_engine(postgres_connection_string)
 
-    cur = conn.cursor()
-    return conn, cur
+    return engine
 
-# function for closing the connection
-def close_connection(conn, cur):
-    cur.close()
-    conn.close()
 
-# function for creating a table. Called by create_table_task task
-def create_table():
-    conn, cur = create_connection_to_postgres()
+# function for droping a table. Called by drop_table_task task
+def drop_table():
+    engine = create_connection_to_postgres()
     create_table_query = f"""
-        -- DROP TABLE IF EXISTS polygon_data;
-        CREATE TABLE IF NOT EXISTS polygon_data (id INT, name VARCHAR);
+        DROP TABLE IF EXISTS polygon_data CASCADE;
         """
     
-    cur.execute(create_table_query)
-    conn.commit()
+    with engine.connect() as conn:
+        conn.execute(create_table_query)
 
-    close_connection(conn, cur)
+# function for fetching data from polygon API. Called by fetch_data_task task
+def fetch_data():
+    print('Fetching data...')
+    engine = create_connection_to_postgres()
+    polygon_api_key = 'rZAf7cgy4CA0Fa_Z78cfyKJlBJJG1VNP'
+    client = RESTClient(polygon_api_key)
+    print('Connected to polygon API with key: ', polygon_api_key)
+    ticker = 'AAPL'
+    aggs = []
+
+    today = datetime.now()
+    start = today - timedelta(days=730)
+    from_date = start.strftime('%Y-%m-%d')
+    to_date = today.strftime('%Y-%m-%d')
+
+    for day in client.get_aggs(ticker=ticker, multiplier=1, timespan='day', from_= from_date, to= to_date):
+        aggs.append(day)
+    print(aggs)
+
+    df = pd.DataFrame(aggs)
+    print(df.head())
+    df.to_sql('polygon_data', con=engine, if_exists='append')
 
 # DAG
 with DAG(
@@ -55,10 +67,15 @@ with DAG(
 ) as dag:
     
     # tasks
-    create_table_task = PythonOperator(
-        task_id = 'create_table',
-        python_callable = create_table,
+    drop_table_task = PythonOperator(
+        task_id = 'drop_table',
+        python_callable = drop_table,
+    )
+
+    fetch_data_task = PythonOperator(
+        task_id = 'fetch_data',
+        python_callable = fetch_data,    
     )
 
     # dependencies
-    create_table_task
+    drop_table_task >> fetch_data_task
