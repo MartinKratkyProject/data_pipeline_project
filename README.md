@@ -18,14 +18,14 @@ This is a data pipeline project.
         -   create a new empty folders in D: disk for storing the data from postgres. Volumes in yaml file will be bind to these files (one folder might be enought).
 
 5. Test ETL/ELT pipelines.                                              |  ETA - 23.3.  Done 27.2.
-5.1. Store actual polygon data in postres using dags.                   |  ETA - 23.3.      
+5.1. Store actual polygon data in postres using dags.                   |  ETA - 23.3.  Done 1.3.    
 6. Prepare Flask application for backend.                               |  ETA - 6.4.
     -   set up flask application in python
     -   create connection with backend and database
     -   test connection
 7. Prepare frontend appliation with .Vue                                |  ETA - 4.5.
 8. Test project                                                         |  ETA - 25.5.
-9. Deploy project into www.                                             |  ETA - 8.6.
+9. Deploy project into www.    ?                                         |  ETA - 8.6.
 
 
 # ------------------------------------- DOCUMENTATION -------------------------------------
