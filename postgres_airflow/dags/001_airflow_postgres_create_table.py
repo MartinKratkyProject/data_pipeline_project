@@ -1,11 +1,10 @@
 from airflow import DAG
 from datetime import datetime, timedelta
-import psycopg2
 import pandas as pd
 from airflow.operators.python import PythonOperator
-import os
 from polygon import RESTClient
 from sqlalchemy import create_engine
+from airflow.models import Variable
 
 default_args = {
     'owner': 'admin',
@@ -17,11 +16,10 @@ default_args = {
 
 # function for creating a connection to postgres
 def create_connection_to_postgres():
-    postgres_connection_string = 'postgresql+psycopg2://airflow:airflow@postgres:5432/postgres'
-    engine = create_engine(postgres_connection_string)
+    postgres_connection = Variable.get("sqlalchemy_pg_conn")
+    engine = create_engine(postgres_connection)
 
     return engine
-
 
 # function for droping a table. Called by drop_table_task task
 def drop_table():
@@ -35,12 +33,10 @@ def drop_table():
 
 # function for fetching data from polygon API. Called by fetch_data_task task
 def fetch_data():
-    print('Fetching data...')
     engine = create_connection_to_postgres()
     polygon_api_key = 'rZAf7cgy4CA0Fa_Z78cfyKJlBJJG1VNP'
     client = RESTClient(polygon_api_key)
-    print('Connected to polygon API with key: ', polygon_api_key)
-    ticker = 'AAPL'
+    ticker = 'SPY'
     aggs = []
 
     today = datetime.now()
@@ -50,10 +46,8 @@ def fetch_data():
 
     for day in client.get_aggs(ticker=ticker, multiplier=1, timespan='day', from_= from_date, to= to_date):
         aggs.append(day)
-    print(aggs)
 
     df = pd.DataFrame(aggs)
-    print(df.head())
     df.to_sql('polygon_data', con=engine, if_exists='append')
 
 # DAG
