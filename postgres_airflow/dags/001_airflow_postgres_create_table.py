@@ -10,7 +10,7 @@ default_args = {
     'owner': 'admin',
     'start_date': datetime(2025, 1, 1),
     'retries': 2,
-    'retry_delay': timedelta(minutes=2),
+    'retry_delay': timedelta(minutes=1),
     'depends_on_past': False
 }
 
@@ -24,31 +24,34 @@ def create_connection_to_postgres():
 # function for droping a table. Called by drop_table_task task
 def drop_table():
     engine = create_connection_to_postgres()
-    create_table_query = f"""
-        DROP TABLE IF EXISTS polygon_data CASCADE;
-        """
-    
-    with engine.connect() as conn:
-        conn.execute(create_table_query)
-
+    tickers = Variable.get("tickers", deserialize_json=True)
+    conn = engine.connect()
+    for ticker in tickers:
+        drop_table_query = f"""
+            DROP TABLE IF EXISTS "{ticker}" CASCADE;
+            """
+        conn.execute(drop_table_query)
+        
+        
 # function for fetching data from polygon API. Called by fetch_data_task task
 def fetch_data():
     engine = create_connection_to_postgres()
-    polygon_api_key = 'rZAf7cgy4CA0Fa_Z78cfyKJlBJJG1VNP'
+    polygon_api_key = Variable.get("polygon_api_key")
     client = RESTClient(polygon_api_key)
-    ticker = 'SPY'
-    aggs = []
 
-    today = datetime.now()
-    start = today - timedelta(days=730)
-    from_date = start.strftime('%Y-%m-%d')
-    to_date = today.strftime('%Y-%m-%d')
+    indices = Variable.get("tickers", deserialize_json=True)
+    for indice in indices:
+        aggs = []
+        today = datetime.now()
+        start = today - timedelta(days=1500)
+        from_date = start.strftime('%Y-%m-%d')
+        to_date = today.strftime('%Y-%m-%d')
 
-    for day in client.get_aggs(ticker=ticker, multiplier=1, timespan='day', from_= from_date, to= to_date):
-        aggs.append(day)
+        for day in client.get_aggs(ticker=indice, multiplier=1, timespan='day', from_= from_date, to= to_date):
+            aggs.append(day)
 
-    df = pd.DataFrame(aggs)
-    df.to_sql('polygon_data', con=engine, if_exists='append')
+        df = pd.DataFrame(aggs)
+        df.to_sql(indice, con=engine, if_exists='append', index=False)
 
 # DAG
 with DAG(
