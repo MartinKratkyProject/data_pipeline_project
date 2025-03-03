@@ -39,19 +39,19 @@ def fetch_data():
     polygon_api_key = Variable.get("polygon_api_key")
     client = RESTClient(polygon_api_key)
 
-    indices = Variable.get("tickers", deserialize_json=True)
-    for indice in indices:
+    tickers = Variable.get("tickers", deserialize_json=True)
+    for ticker in tickers:
         aggs = []
         today = datetime.now()
         start = today - timedelta(days=1500)
         from_date = start.strftime('%Y-%m-%d')
         to_date = today.strftime('%Y-%m-%d')
 
-        for day in client.get_aggs(ticker=indice, multiplier=1, timespan='day', from_= from_date, to= to_date):
+        for day in client.get_aggs(ticker=ticker, multiplier=1, timespan='day', from_= from_date, to= to_date):
             aggs.append(day)
 
         df = pd.DataFrame(aggs)
-        df.to_sql(indice, con=engine, if_exists='append', index=False)
+        df.to_sql(ticker, con=engine, if_exists='append', index=False)
 
 # DAG
 with DAG(
