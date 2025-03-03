@@ -36,11 +36,11 @@ Project Setup & Installation
     Install Docker & Docker Compose
     Get a Polygon API key
 
-1   Clone the Repository
-2   Start Services using Docker Compose
-3   Access the Services
+1 🔹  Clone the Repository
+2 🔹 Start Services using Docker Compose
+3 🔹  Access the Services
 🔹 pgAdmin: http://localhost:5050 (User: admin@example.com, Password: admin)
-    Create a new server:
+ 🔹   Create a new server:
         NAME: postgres_test
         HOST: postgres
         PORT: 5432
@@ -48,7 +48,7 @@ Project Setup & Installation
         USERNAME: airflow
         PASSWORD: airflow 
 🔹 Airflow UI: http://localhost:8080 (User: airflow, Password: airflow)
-    Create a new connection: postgres
+ 🔹   Create a new connection: postgres
         Connection Id: postgres_default
         Connection Type: Postgres
         Host: postgres
@@ -56,14 +56,14 @@ Project Setup & Installation
         Login: airflow
         Password: airflow
         Port: 5432
-    redis:
+  🔹  redis:
         Connection Id: redis_default
         Connection Type: Redis
         Host: redis
         Login:
         Password:
         Port: 6379
-    Create new variables:
+  🔹  Create new variables:
         Key                 Val
         polygon_api_key     your_api_key
         sqlalchemy_pg_conn  postgresql+psycopg2://airflow:airflow@postgres:5432/postgres
