@@ -30,7 +30,7 @@ def fetch_latest_record(table_name):
 
     with engine.connect() as conn:
         latest_record = conn.execute(sql_query).fetchone()
-        latest_record = latest_record[0] if latest_record else 1898786817
+        latest_record = latest_record[0] if latest_record else 1898786817 #Sun Mar 03 2030 16:46:57 GMT+0000
   
     return latest_record
 
@@ -56,9 +56,8 @@ def fetch_data():
         latest_record = fetch_latest_record(indice)
 
         df_filtered = df[df['timestamp'] > latest_record]
+
         engine = create_connection_to_postgres()
-        print(latest_record)
-        print(df_filtered)
         df_filtered.to_sql(indice, con=engine, if_exists='append', index=False)
 # DAG
 with DAG(
