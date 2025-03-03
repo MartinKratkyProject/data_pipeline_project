@@ -52,7 +52,7 @@ Project Setup & Installation
 
 🔹 Airflow UI: http://localhost:8080 (User: airflow, Password: airflow)
 
- 🔹   Create a new connection: postgres
+ 🔹   Create a new connection: postgres:
         Connection Id: postgres_default,
         Connection Type: Postgres,
         Host: postgres,
