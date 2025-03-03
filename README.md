@@ -1,38 +1,75 @@
-# data_pipeline_project
+DOCUMENTATION
 
-This is a data pipeline project.
+This project is a data engineering pipeline that extracts stock market data from the Polygon API for Apple (AAPL), Amazon (AMZN), Google (GOOGL), Nvidia (NVDA), and Tesla (TSLA). The data is processed and stored in a PostgreSQL database using Apache Airflow.
+The ETL pipeline is containerized using Docker, and services such as pgAdmin, Redis, and Flower are used for monitoring and managing the workflow.
 
-1. Select the purpouse of this project. (What data will I gather...)    |  ETA - 23.2.  Done 18.2.
-2. Find a good source of data (.csv, .excl, url).                       |  ETA - 2.3.   Done 18.2.
-3. Set up airflow for scheduling ETL/ELT pipelines.                     |               Done 9.2. 
-    -   set up docker                                                     
-        -   set up WSL2
-4. Store data in PostgreSQL DB.                                         |  ETA - 9.3.   Done 23.2.
-    -   set up PostgreSQL DB.
+Technology      Purpose
 
-    PREPARATION: 
-        -   both services (airflow and postgres) will run on separate containers using docker. 
-        -   docker-compose.yaml: The first step will be creating a docker-compose.yaml file with 3 services - postgres, airflow and additional pgAdmin. 
-        -   NOTE: probably the backend and frontend applications will be running on separate containers. 
-    PREREQUISITIES: 
-        -   create a new empty folders in D: disk for storing the data from postgres. Volumes in yaml file will be bind to these files (one folder might be enought).
+Apache Airflow  Orchestrating ETL workflows
+Polygon API     Fetching stock market data
+PostgreSQL      Storing processed data
+Docker          Containerizing services
+pgAdmin         Managing PostgreSQL database
+Redis           Message broker for Airflow
+Flower          Monitoring Airflow tasks
 
-5. Test ETL/ELT pipelines.                                              |  ETA - 23.3.  Done 27.2.
-5.1. Store actual polygon data in postres using dags.                   |  ETA - 23.3.  Done 1.3.    
-6. Prepare Flask application for backend.                               |  ETA - 6.4.
-    -   set up flask application in python
-    -   create connection with backend and database
-    -   test connection
-7. Prepare frontend appliation with .Vue                                |  ETA - 4.5.
-8. Test project                                                         |  ETA - 25.5.
-9. Deploy project into www.    ?                                         |  ETA - 8.6.
+ETL Pipeline Architecture
+
+🔹 Step 1: Extraction
+    Fetch historical stock data from Polygon API.
+    Store raw data temporarily in Pandas DataFrame.
+
+🔹 Step 2: Transformation
+    Filter new data using the latest available timestamp from PostgreSQL.
+
+🔹 Step 3: Loading
+    Append new records into the PostgreSQL database.
+
+🔹 Airflow DAGs
+    001_airflow_postgres_create_table.py    → Fetches stock data and stores it in PostgreSQL.
+    001_airflow_postgres_load_new_data.py   → Extracts and loads the latest stock data.
 
 
-# ------------------------------------- DOCUMENTATION -------------------------------------
+Project Setup & Installation
 
-1. The purpose of this project is the demonstration of using different data engineering platforms in a single env, creating a robust and scalable structure for web designed app.
-The app is meant to provide latest stock market data in forms of meaningful visualization.
+🔹 Prerequisites: Install Docker & Docker Compose; Get a Polygon API key
 
-2. For the stock market data, I choose to go with https://polygon.io/. Polygon web site provides large sets of different investment data. I decided to use data getting from 
-available polygon API. 
+1 🔹 Clone the Repository
 
+2 🔹 Start Services using Docker Compose
+
+3 🔹  Access the Services
+
+🔹 pgAdmin: http://localhost:5050 (User: admin@example.com, Password: admin)
+
+ 🔹   Create a new server:
+        NAME: postgres_test,
+        HOST: postgres,
+        PORT: 5432,
+        DATABASE: airflow,
+        USERNAME: airflow,
+        PASSWORD: airflow
+
+🔹 Airflow UI: http://localhost:8080 (User: airflow, Password: airflow)
+
+ 🔹   Create a new connection: postgres:
+        Connection Id: postgres_default,
+        Connection Type: Postgres,
+        Host: postgres,
+        Database: airflow,
+        Login: airflow,
+        Password: airflow,
+        Port: 5432
+
+  🔹  redis:
+        Connection Id: redis_default,
+        Connection Type: Redis,
+        Host: redis,
+        Login: ,
+        Password: ,
+        Port: 6379
+
+  🔹  Create new variables:
+        polygon_api_key     >  your_api_key ,
+        sqlalchemy_pg_conn  > postgresql+psycopg2://airflow:airflow@postgres:5432/postgres ,
+        tickers             >  ["AAPL", "TSLA", "NVDA", "GOOGL", "AMZN"]
