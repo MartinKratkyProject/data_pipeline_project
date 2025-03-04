@@ -26,7 +26,6 @@ def fetch_latest_record(table_name):
     engine = create_connection_to_postgres()
     
     sql_query = f"""SELECT timestamp FROM "{table_name}" ORDER BY 1 DESC LIMIT 1;"""
-    print(sql_query)
 
     with engine.connect() as conn:
         latest_record = conn.execute(sql_query).fetchone()
