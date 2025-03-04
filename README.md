@@ -34,7 +34,7 @@ Project Setup & Installation
 
 🔹 Prerequisites: Install Docker & Docker Compose; Get a Polygon API key
 
-1 🔹 Clone the Repository
+1 🔹 Clone the Repository (main branch)
 
 2 🔹 Start Services using Docker Compose
 
