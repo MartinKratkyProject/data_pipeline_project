@@ -87,7 +87,7 @@ x-airflow-common:
       condition: service_healthy
 
 services:
-  flask-app:
+  flask-app-backend:
     build: ../flask_app_backend
     ports:
       - "5000:5000"
