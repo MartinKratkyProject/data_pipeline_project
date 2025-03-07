@@ -1,2 +1,4 @@
 flask
 markupsafe
+psycopg2-binary
+Flask-SQLAlchemy
