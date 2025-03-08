@@ -87,6 +87,20 @@ x-airflow-common:
       condition: service_healthy
 
 services:
+  flask-app-backend:
+    build: ../flask_app_backend
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: development
+      FLASK_RUN_HOST: 0.0.0.0
+    volumes:
+      - ../flask_app_backend:/app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:13
     environment:
