@@ -101,6 +101,14 @@ services:
     depends_on:
       - postgres
 
+  vue-frontend:
+    build: ../vue_frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - flask-app-backend
+    restart: no
+
   postgres:
     image: postgres:13
     environment:
