@@ -1,7 +1,15 @@
 DOCUMENTATION
 
-This project is a data engineering pipeline that extracts stock market data from the Polygon API for Apple (AAPL), Amazon (AMZN), Google (GOOGL), Nvidia (NVDA), and Tesla (TSLA). The data is processed and stored in a PostgreSQL database using Apache Airflow.
-The ETL pipeline is containerized using Docker, and services such as pgAdmin, Redis, and Flower are used for monitoring and managing the workflow.
+This project is a fully automated data engineering pipeline designed to extract stock market data from the Polygon API for Apple (AAPL), Amazon (AMZN), Google (GOOGL), Nvidia (NVDA), and Tesla (TSLA). The extracted data is processed and stored in a PostgreSQL database using Apache Airflow, ensuring efficient data management and scheduling.
+
+To enhance scalability and maintainability, the entire ETL pipeline is containerized using Docker. Additional services such as pgAdmin, Redis, and Flower are integrated to monitor and manage the workflow, providing a robust infrastructure for data processing. As a result, this pipeline autonomously fetches and stores stock market data in the PostgreSQL database on a daily basis without requiring manual intervention.
+
+The second part of this project is a full-stack web application that utilizes the PostgreSQL database populated by the data pipeline. The backend is built using Flask and is responsible for fetching the stored stock data and exposing it through API endpoints. To ensure a stable and efficient connection to the database, the backend leverages libraries such as psycopg2-binary and Flask-SQLAlchemy. This allows the application to seamlessly retrieve and serve the stock data to clients, providing a reliable interface for accessing market insights.
+
+Together, this project delivers a complete data pipeline and web application, enabling automated data extraction, processing, storage, and accessibility through a structured API.
+
+
+ETL Pipeline Architecture
 
 Technology      Purpose
 
@@ -12,8 +20,6 @@ Docker          Containerizing services
 pgAdmin         Managing PostgreSQL database
 Redis           Message broker for Airflow
 Flower          Monitoring Airflow tasks
-
-ETL Pipeline Architecture
 
 🔹 Step 1: Extraction
     Fetch historical stock data from Polygon API.
@@ -28,6 +34,10 @@ ETL Pipeline Architecture
 🔹 Airflow DAGs
     001_airflow_postgres_create_table.py    → Fetches stock data and stores it in PostgreSQL.
     001_airflow_postgres_load_new_data.py   → Extracts and loads the latest stock data.
+
+
+Backend Structure
+# here will be technical documentation of the backend app......
 
 
 Project Setup & Installation
