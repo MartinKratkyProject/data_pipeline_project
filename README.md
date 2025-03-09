@@ -6,8 +6,6 @@ To enhance scalability and maintainability, the entire ETL pipeline is container
 
 The second part of this project is a full-stack web application that utilizes the PostgreSQL database populated by the data pipeline. The backend is built using Flask and is responsible for fetching the stored stock data and exposing it through API endpoints. To ensure a stable and efficient connection to the database, the backend leverages libraries such as psycopg2-binary and Flask-SQLAlchemy. This allows the application to seamlessly retrieve and serve the stock data to clients, providing a reliable interface for accessing market insights.
 
-Together, this project delivers a complete data pipeline and web application, enabling automated data extraction, processing, storage, and accessibility through a structured API.
-
 
 ETL Pipeline Architecture
 
