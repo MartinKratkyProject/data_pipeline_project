@@ -20,7 +20,7 @@ def create_connection_to_postgres():
 
     return engine
 
-# function for redeploying dependent views
+# function for creating and populating dependent views
 def redeploy_views():
     engine = create_connection_to_postgres()
 
@@ -28,7 +28,16 @@ def redeploy_views():
     for ticker in tickers:
         engine.execute(f"""DROP VIEW IF EXISTS vw_{ticker};""")
         engine.execute(f"""CREATE OR REPLACE VIEW vw_{ticker} AS(
-                            SELECT * FROM "{ticker}"
+                            SELECT DISTINCT
+                                open
+                                , high
+                                , low
+                                , close
+                                , volume
+                                , vwap
+                                , transactions
+                                , TO_TIMESTAMP(timestamp / 1000)::DATE AS record_date  
+                            FROM "{ticker}"
                         );""")
 
 # DAG
@@ -37,7 +46,7 @@ with DAG(
     default_args = default_args,
     schedule = None,
     catchup = False,
-    description = 'This DAG creates a new dependent views and copy data from source table.',
+    description = 'This DAG creates a new dependent views, copy data from source table and create a new record_date column.',
     tags = ['database', 'postgres']
 ) as dag:
     
