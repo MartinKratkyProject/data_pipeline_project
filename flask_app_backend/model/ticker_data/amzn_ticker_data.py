@@ -7,7 +7,7 @@ def get_amzn_data():
         amzn_data = ticker_models.AMZN.query.all()
         result = [
             {
-                "timestamp": row.timestamp
+                "record_date": row.record_date
                 , "open": row.open
                 , "close": row.close
                 , "high": row.high
