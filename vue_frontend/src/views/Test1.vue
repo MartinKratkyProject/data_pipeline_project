@@ -142,22 +142,8 @@ onMounted(fetchData);
 
 <style>
 .chart {
-  width: 1400%;
-  height: 700px;
-  margin: 0 auto;
-}
-
-body {
-  background-color: white;
-  color: black;
-}
-
-#app {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  flex-direction: column;
+  width: 1000px;
+  height: 500px;
 }
 
 </style>
