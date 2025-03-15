@@ -9,16 +9,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import VChart from 'vue-echarts';
 import { use } from 'echarts/core';
-import {
-  TitleComponent,
-  TooltipComponent,
-  GridComponent,
-  DatasetComponent,
-  ToolboxComponent,
-} from 'echarts/components';
+import { TitleComponent, TooltipComponent, GridComponent, } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart } from 'echarts/charts';
 
@@ -26,8 +20,6 @@ use([
   TitleComponent,
   TooltipComponent,
   GridComponent,
-  DatasetComponent,
-  ToolboxComponent,
   CanvasRenderer,
   LineChart,
 ]);
@@ -37,13 +29,44 @@ const close = ref([]);
 const high = ref([]);
 const low = ref([]);
 const labels = ref([]);
-const data1 = ref([]);
+const stock_data = ref([]);
 const error = ref(null);
+const chartOption = ref({});
 
-const chartOption = ref({
+const fetchData = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/aapl');
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+    
+    stock_data.value = await response.json();
+    stock_data.value.sort((a, b) => new Date(a.record_date) - new Date(b.record_date));
+
+    open.value = [];
+    close.value = [];
+    high.value = [];
+    low.value = [];
+    labels.value = [];
+
+    for (let i = 0; i < stock_data.value.length; i++) {
+      open.value.push(stock_data.value[i].open);
+      close.value.push(stock_data.value[i].close);
+      high.value.push(stock_data.value[i].high);
+      low.value.push(stock_data.value[i].low);
+      labels.value.push(stock_data.value[i].record_date);
+    }
+
+    chartOption.value = {
   title: { text: 'Apple Stock Prices' },
-
-
+  tooltip: { trigger: 'axis' },
+  xAxis: { type: 'category', data: labels.value },
+  yAxis: {
+    type: 'value',
+    min: 100,
+    max: 300,
+    interval: 50,
+  },
   series: [
     {
       name: 'Open Price',
@@ -70,72 +93,13 @@ const chartOption = ref({
       smooth: true,
     },
   ],
-});
+};
 
-
-const fetchData = async () => {
-  try {
-    const response = await fetch('http://127.0.0.1:5000/aapl');
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
-    }
-    
-    data1.value = await response.json();
-    data1.value.sort((a, b) => new Date(a.record_date) - new Date(b.record_date));
-
-    open.value = [];
-    close.value = [];
-    high.value = [];
-    low.value = [];
-    labels.value = [];
-
-    for (let i = 0; i < data1.value.length; i++) {
-      open.value.push(data1.value[i].open);
-      close.value.push(data1.value[i].close);
-      high.value.push(data1.value[i].high);
-      low.value.push(data1.value[i].low);
-      labels.value.push(data1.value[i].record_date);
-    }
     
   } catch (err) {
     error.value = err.message;
   }
 };
-
-watch([open, close, high, low], () => {
-  chartOption.value = {
-    title: { text: 'Apple Stock Prices' },
-    tooltip: { trigger: 'axis' },
-    xAxis: { type: 'category', data: labels.value },
-    yAxis: { type: 'value' },
-    series: [
-      {
-        name: 'Open Price',
-        data: open.value,
-        type: 'line',
-        smooth: true,
-      },
-      {
-        name: 'Close Price',
-        data: close.value,
-        type: 'line',
-        smooth: true,
-      },
-      {
-        name: 'High Price',
-        data: high.value,
-        type: 'line',
-        smooth: true,
-      },
-      {
-        name: 'Low Price',
-        data: low.value,
-        type: 'line',
-        smooth: true,
-      },
-    ],
-  };
-});
 
 onMounted(fetchData);
 </script>
