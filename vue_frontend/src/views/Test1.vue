@@ -11,7 +11,7 @@
 import { ref, onMounted } from 'vue';
 import VChart from 'vue-echarts';
 import { use } from 'echarts/core';
-import { TitleComponent, TooltipComponent, GridComponent, } from 'echarts/components';
+import { TitleComponent, TooltipComponent, GridComponent, LegendComponent, } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart } from 'echarts/charts';
 
@@ -21,6 +21,7 @@ use([
   GridComponent,
   CanvasRenderer,
   LineChart,
+  LegendComponent,
 ]);
 
 const open = ref([]);
@@ -60,11 +61,15 @@ const fetchData = async () => {
     chartOption.value = {
       title: { text: 'Apple Stock Prices', left: 'center' },
       tooltip: { trigger: 'axis' },
+      legend: { 
+        bottom: 0,  // Places the legend at the bottom
+        left: 'center' 
+      },
       xAxis: { type: 'category', data: labels.value },
       yAxis: {
         type: 'value',
-        min: Math.round(Math.min(...low.value)/100)*100,
-        max: Math.round(Math.max(...high.value)/100)*100,
+        min: Math.round(Math.min(...low.value) / 100) * 100,
+        max: Math.round(Math.max(...high.value) / 100) * 100,
       },
       series: [
         {
