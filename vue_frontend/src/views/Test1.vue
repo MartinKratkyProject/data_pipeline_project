@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>Stock Data</h1>
     <p v-if="error">Error: {{ error }}</p>
     <p v-else-if="!open.length">Loading...</p>
     <p v-else>Latest Date: {{ data1?.[0]?.record_date }}</p>
