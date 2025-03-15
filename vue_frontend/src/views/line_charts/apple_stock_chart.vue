@@ -62,14 +62,14 @@ const fetchData = async () => {
       title: { text: 'Apple Stock Prices', left: 'center' },
       tooltip: { trigger: 'axis' },
       legend: { 
-        bottom: 0,  // Places the legend at the bottom
+        bottom: 0,
         left: 'center' 
       },
       xAxis: { type: 'category', data: labels.value },
       yAxis: {
         type: 'value',
-        min: Math.round(Math.min(...low.value) / 100) * 100,
-        max: Math.round(Math.max(...high.value) / 100) * 100,
+        min: Math.floor(Math.min(...low.value) / 100) * 100,
+        max: Math.ceil(Math.max(...high.value) / 100) * 100,
       },
       series: [
         {

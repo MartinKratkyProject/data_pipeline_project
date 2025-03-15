@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Test1 from '../views/Test1.vue'
+import Test1 from '../views/line_charts/apple_stock_chart.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
