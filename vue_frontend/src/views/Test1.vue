@@ -2,7 +2,7 @@
   <div>
     <p v-if="error">Error: {{ error }}</p>
     <p v-else-if="!open.length">Loading...</p>
-    <p v-else>Latest Date: {{ data1?.[0]?.record_date }}</p>
+    <p v-else>Latest Date: {{ stock_data?.[0]?.record_date }}</p>
     <v-chart v-else :option="chartOption" class="chart" />
   </div>
 </template>
@@ -53,48 +53,46 @@ const fetchData = async () => {
       close.value.push(stock_data.value[i].close);
       high.value.push(stock_data.value[i].high);
       low.value.push(stock_data.value[i].low);
-      labels.value.push(stock_data.value[i].record_date);
+      
+      labels.value.push(new Date(stock_data.value[i].record_date).toISOString().split('T')[0]);
     }
 
     chartOption.value = {
-  title: { text: 'Apple Stock Prices' },
-  tooltip: { trigger: 'axis' },
-  xAxis: { type: 'category', data: labels.value },
-  yAxis: {
-    type: 'value',
-    min: 100,
-    max: 300,
-    interval: 50,
-  },
-  series: [
-    {
-      name: 'Open Price',
-      data: open.value,
-      type: 'line',
-      smooth: true,
-    },
-    {
-      name: 'Close Price',
-      data: close.value,
-      type: 'line',
-      smooth: true,
-    },
-    {
-      name: 'High Price',
-      data: high.value,
-      type: 'line',
-      smooth: true,
-    },
-    {
-      name: 'Low Price',
-      data: low.value,
-      type: 'line',
-      smooth: true,
-    },
-  ],
-};
-
-    
+      title: { text: 'Apple Stock Prices', left: 'center' },
+      tooltip: { trigger: 'axis' },
+      xAxis: { type: 'category', data: labels.value },
+      yAxis: {
+        type: 'value',
+        min: Math.round(Math.min(...low.value)/100)*100,
+        max: Math.round(Math.max(...high.value)/100)*100,
+      },
+      series: [
+        {
+          name: 'Open Price',
+          data: open.value,
+          type: 'line',
+          smooth: true,
+        },
+        {
+          name: 'Close Price',
+          data: close.value,
+          type: 'line',
+          smooth: true,
+        },
+        {
+          name: 'High Price',
+          data: high.value,
+          type: 'line',
+          smooth: true,
+        },
+        {
+          name: 'Low Price',
+          data: low.value,
+          type: 'line',
+          smooth: true,
+        },
+      ],
+    };
   } catch (err) {
     error.value = err.message;
   }
@@ -104,6 +102,14 @@ onMounted(fetchData);
 </script>
 
 <style>
+.chart-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100vh;
+}
+
 .chart {
   width: 1000px;
   height: 500px;
