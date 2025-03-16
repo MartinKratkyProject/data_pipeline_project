@@ -1,21 +1,47 @@
 <template>
   <div>
-      <apple />
-      <amazon />
-      <google />
-      <nvidia />
-      <tesla />
+    <!-- Navbar: This will be visible on all pages -->
+    <nav>
+      <ul>
+        <li><router-link to="/">Home</router-link></li>
+        <li><router-link to="/test">Test</router-link></li>
+        <!-- Add more links as needed -->
+      </ul>
+    </nav>
+
+    <!-- Route-specific content will be injected here -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script setup lang="ts">
-import apple from './views/line_charts/apple_stock_chart.vue'
-import amazon from './views/line_charts/amazon_stock_chart.vue'
-import google from './views/line_charts/google_stock_chart.vue'
-import nvidia from './views/line_charts/nvidia_stock_chart.vue'
-import tesla from './views/line_charts/tesla_stock_chart.vue'
+// No need to import route-specific components here, as they are handled by the router
 </script>
 
 <style scoped>
+/* Styling for your navbar */
+nav {
+  background-color: #e22525;
+  color: white;
+  padding: 1em;
+}
 
+ul {
+  list-style-type: none;
+  display: flex;
+  gap: 1em;
+}
+
+li {
+  font-size: 18px;
+}
+
+router-link {
+  text-decoration: none;
+  color: white;
+}
+
+router-link:hover {
+  text-decoration: underline;
+}
 </style>
