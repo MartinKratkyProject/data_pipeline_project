@@ -24,7 +24,27 @@
             </template>
           </el-dropdown>
         </li>
-        <li><router-link to="/test">Powered by</router-link></li>
+        <li>
+          <el-dropdown trigger="click" hide-on-click="false">
+            <span class="dropdown-trigger">
+              Powered by
+              <el-icon><ArrowDown /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>
+                  <router-link to="/tickers/option1">Vue</router-link>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <router-link to="/tickers/option2">Element Plus</router-link>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <router-link to="/tickers/option3">e-charts</router-link>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </li>
         <li><router-link to="/">About</router-link></li>
       </ul>
     </nav>
@@ -47,7 +67,7 @@ nav {
 ul {
   list-style-type: none;
   display: flex;
-  align-items: center; /* Fixes alignment issue */
+  align-items: center;
   justify-content: center;
   gap: 1.5em;
   padding: 0;
@@ -72,6 +92,7 @@ nav a:hover {
   transform: scale(1.05);
 }
 
+nav a, 
 .dropdown-trigger {
   color: white;
   font-weight: bold;
@@ -91,7 +112,28 @@ nav a:hover {
 }
 
 .el-dropdown-menu {
-  background-color: white;
+  background-color: rgb(111, 118, 218);
   color: black;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.el-dropdown-menu .el-dropdown-item {
+  display: block;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.el-dropdown-menu .el-dropdown-item a {
+  display: block;
+  width: 100%;
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.el-dropdown-menu .el-dropdown-item a:hover {
+  background: rgba(0, 0, 0, 0.1);
 }
 </style>
