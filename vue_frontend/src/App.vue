@@ -4,43 +4,27 @@
       <ul>
         <li><router-link to="/">Home</router-link></li>
         <li>
-          <el-dropdown trigger="click" hide-on-click="false">
-            <span class="dropdown-trigger">
-              Tickers
-              <el-icon><ArrowDown /></el-icon>
-            </span>
+          <el-dropdown>
+            <span class="dropdown-trigger">Tickers</span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item>
-                  <router-link to="/tickers/option1">Option 1</router-link>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <router-link to="/tickers/option2">Option 2</router-link>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <router-link to="/tickers/option3">Option 3</router-link>
-                </el-dropdown-item>
+                <router-link to="/tickers/option1">Apple</router-link>
+                <router-link to="/tickers/option2">Amazon</router-link>
+                <router-link to="/tickers/option3">Google</router-link>
+                <router-link to="/tickers/option2">Nvidia</router-link>
+                <router-link to="/tickers/option3">Tesla</router-link>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
         </li>
         <li>
-          <el-dropdown trigger="click" hide-on-click="false">
-            <span class="dropdown-trigger">
-              Powered by
-              <el-icon><ArrowDown /></el-icon>
-            </span>
+          <el-dropdown>
+            <span class="dropdown-trigger">Powered by</span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item>
-                  <router-link to="/tickers/option1">Vue</router-link>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <router-link to="/tickers/option2">Element Plus</router-link>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <router-link to="/tickers/option3">e-charts</router-link>
-                </el-dropdown-item>
+                <router-link to="/tickers/option1">Vue3</router-link>
+                <router-link to="/tickers/option2">Element Plus</router-link>
+                <router-link to="/tickers/option3">Echarts</router-link>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -54,7 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDown } from "@element-plus/icons-vue";
 </script>
 
 <style scoped>
@@ -79,7 +62,6 @@ li {
 }
 
 nav a {
-  text-decoration: none;
   color: white;
   font-weight: bold;
   padding: 10px 16px;
@@ -87,28 +69,25 @@ nav a {
   transition: background 0.2s ease-in-out, transform 0.2s;
 }
 
-nav a:hover {
+nav a:hover, 
+.dropdown-trigger:hover,
+.el-dropdown-menu a:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
 
 nav a, 
-.dropdown-trigger {
+.dropdown-trigger,
+.el-dropdown-menu a {
+  text-decoration: none;
   color: white;
   font-weight: bold;
-  font-size: 18px;
   padding: 10px 16px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  gap: 5px;
   transition: background 0.2s ease-in-out, transform 0.2s;
-}
-
-.dropdown-trigger:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
 }
 
 .el-dropdown-menu {
@@ -119,21 +98,12 @@ nav a,
   padding: 5px;
 }
 
-.el-dropdown-menu .el-dropdown-item {
+.el-dropdown-menu .el-dropdown-item, 
+.el-dropdown-menu a {
   display: block;
   padding: 8px 12px;
   text-align: left;
+  color: white;
 }
 
-.el-dropdown-menu .el-dropdown-item a {
-  display: block;
-  width: 100%;
-  color: black;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.el-dropdown-menu .el-dropdown-item a:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
 </style>
