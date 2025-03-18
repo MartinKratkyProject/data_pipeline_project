@@ -16,28 +16,29 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <router-link class="dropdown-link" to="/tickers/option1">Apple</router-link>
-                <router-link class="dropdown-link" to="/tickers/option2">Amazon</router-link>
-                <router-link class="dropdown-link" to="/tickers/option3">Google</router-link>
-                <router-link class="dropdown-link" to="/tickers/option2">Nvidia</router-link>
-                <router-link class="dropdown-link" to="/tickers/option3">Tesla</router-link>
+                <router-link class="dropdown-link" to="/apple">Apple</router-link>
+                <router-link class="dropdown-link" to="/amazon">Amazon</router-link>
+                <router-link class="dropdown-link" to="/google">Google</router-link>
+                <router-link class="dropdown-link" to="/nvidia">Nvidia</router-link>
+                <router-link class="dropdown-link" to="/tesla">Tesla</router-link>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
         </li>
         <li>
           <el-dropdown>
-            <span class="dropdown-trigger">Powered by</span>
+            <span class="dropdown-trigger">Powered by <el-icon class="nav-icon"><Cpu /></el-icon></span>
             <template #dropdown>
               <el-dropdown-menu>
-                <router-link class="dropdown-link" to="/tickers/option1">Vue3</router-link>
-                <router-link class="dropdown-link" to="/tickers/option2">Element Plus</router-link>
-                <router-link class="dropdown-link" to="/tickers/option3">Echarts</router-link>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://vite.dev/">Vite</a></el-dropdown-menu-item>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://vuejs.org/">Vue3</a></el-dropdown-menu-item>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://element-plus.org/en-US/">Element Plus</a></el-dropdown-menu-item>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://vue-echarts.dev/">vue-echarts</a></el-dropdown-menu-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
         </li>
-        <li><router-link to="/">About</router-link></li>
+        <li><router-link to="/about">About<el-icon class="nav-icon"><InfoFilled /></el-icon></router-link></li>
       </ul>
     </nav>
 
@@ -46,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { HomeFilled, TrendCharts } from "@element-plus/icons-vue";
+import { HomeFilled, TrendCharts, Cpu, InfoFilled } from "@element-plus/icons-vue";
 </script>
 
 <style scoped>
