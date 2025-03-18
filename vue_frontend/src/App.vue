@@ -4,14 +4,14 @@
       <ul>
         <li>
           <router-link to="/">
-            Home
+            <span class="nav-text">Home</span>
             <el-icon class="nav-icon"><HomeFilled /></el-icon>
           </router-link>
         </li>
         <li>
           <el-dropdown>
             <span class="dropdown-trigger">
-              Tickers
+              <span class="nav-text">Tickers</span>
               <el-icon class="nav-icon"><TrendCharts /></el-icon>
             </span>
             <template #dropdown>
@@ -27,7 +27,10 @@
         </li>
         <li>
           <el-dropdown>
-            <span class="dropdown-trigger">Powered by <el-icon class="nav-icon"><Cpu /></el-icon></span>
+            <span class="dropdown-trigger">
+              <span class="nav-text">Powered by</span>
+              <el-icon class="nav-icon"><Cpu /></el-icon>
+            </span>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-menu-item><a class="dropdown-link" href="https://vite.dev/">Vite</a></el-dropdown-menu-item>
@@ -38,7 +41,12 @@
             </template>
           </el-dropdown>
         </li>
-        <li><router-link to="/about">About<el-icon class="nav-icon"><InfoFilled /></el-icon></router-link></li>
+        <li>
+          <router-link to="/about">
+            <span class="nav-text">About</span>
+            <el-icon class="nav-icon"><InfoFilled /></el-icon>
+          </router-link>
+        </li>
       </ul>
     </nav>
 
@@ -103,6 +111,39 @@ nav a:hover,
 
 .dropdown-link {
   padding: 10px 16px;
+}
+
+@media (max-width: 768px) {
+  .nav-text {
+    opacity: 0;
+    transform: scaleX(0);
+    width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  }
+
+  .nav-icon {
+    opacity: 1;
+    font-size: 24px;
+    margin-left: 0;
+    transition: font-size 0.3s ease-in-out;
+  }
+
+  li, .dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+  }
+}
+
+@media (min-width: 769px) {
+  .nav-text {
+    opacity: 1;
+    transform: scaleX(1);
+    width: auto;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  }
 }
 
 </style>
