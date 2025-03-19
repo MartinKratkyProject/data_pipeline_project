@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>Stock Dashboard</h1>
-    <p class="timestamp">Current Time: {{ currentTime }}</p>
+    <p class="timestamp">{{ currentDate }} | {{ currentTime }}</p>
     
     <div class="stock-summary">
       <div class="summary-card" v-for="(stock, ticker) in stockData" :key="ticker">
@@ -64,10 +64,12 @@ const transactions = ref([
 ]);
 
 const currentTime = ref(new Date().toLocaleTimeString());
+const currentDate = ref(new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
 
 onMounted(() => {
   setInterval(() => {
     currentTime.value = new Date().toLocaleTimeString();
+    currentDate.value = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   }, 1000);
 });
 </script>
