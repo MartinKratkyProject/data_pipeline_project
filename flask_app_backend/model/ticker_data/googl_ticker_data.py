@@ -7,7 +7,7 @@ def get_googl_data():
         googl_data = ticker_models.GOOGL.query.all()
         result = [
             {
-                "timestamp": row.timestamp
+                "record_date": row.record_date
                 , "open": row.open
                 , "close": row.close
                 , "high": row.high

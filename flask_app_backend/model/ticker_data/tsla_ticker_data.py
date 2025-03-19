@@ -7,7 +7,7 @@ def get_tsla_data():
         tsla_data = ticker_models.TSLA.query.all()
         result = [
             {
-                "timestamp": row.timestamp
+                "record_date": row.record_date
                 , "open": row.open
                 , "close": row.close
                 , "high": row.high

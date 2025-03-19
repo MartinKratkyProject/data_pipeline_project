@@ -7,7 +7,7 @@ def get_aapl_data():
         aapl_data = ticker_models.AAPL.query.all()
         result = [
             {
-                "timestamp": row.timestamp
+                "record_date": row.record_date
                 , "open": row.open
                 , "close": row.close
                 , "high": row.high

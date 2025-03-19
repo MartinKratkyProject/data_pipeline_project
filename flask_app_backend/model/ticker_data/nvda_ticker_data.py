@@ -7,7 +7,7 @@ def get_nvda_data():
         nvda_data = ticker_models.NVDA.query.all()
         result = [
             {
-                "timestamp": row.timestamp
+                "record_date": row.record_date
                 , "open": row.open
                 , "close": row.close
                 , "high": row.high
