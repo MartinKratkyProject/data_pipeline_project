@@ -3,7 +3,6 @@
     <h1>Stock Dashboard</h1>
     <p class="timestamp">Current Time: {{ currentTime }}</p>
     
-    <!-- Stock Summary -->
     <div class="stock-summary">
       <div class="summary-card" v-for="(stock, ticker) in stockData" :key="ticker">
         <h3>{{ ticker.toUpperCase() }}</h3>
@@ -15,7 +14,6 @@
       </div>
     </div>
 
-    <!-- Transactions Table -->
     <div class="table-container">
       <h2>Recent Transactions</h2>
       <table>
@@ -49,7 +47,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-// Dummy stock data for multiple tickers
 const stockData = ref({
   apple: { open: 224.5, high: 225.69, low: 221.33, close: 221.69, volume: 37595470 },
   amazon: { open: 171.09, high: 174.21, low: 170.97, close: 173.66, volume: 53006286 },
@@ -58,7 +55,6 @@ const stockData = ref({
   tesla: { open: 189.55, high: 192.10, low: 185.90, close: 190.22, volume: 67341258 }
 });
 
-// Dummy transaction data for multiple tickers
 const transactions = ref([
   { date: "2024-10-07", ticker: "apple", open: 224.5, high: 225.69, low: 221.33, close: 221.69, volume: 37595470 },
   { date: "2023-10-04", ticker: "amazon", open: 171.09, high: 174.21, low: 170.97, close: 173.66, volume: 53006286 },
@@ -67,7 +63,6 @@ const transactions = ref([
   { date: "2024-11-30", ticker: "tesla", open: 189.55, high: 192.10, low: 185.90, close: 190.22, volume: 67341258 }
 ]);
 
-// Real-time clock
 const currentTime = ref(new Date().toLocaleTimeString());
 
 onMounted(() => {
