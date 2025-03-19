@@ -33,11 +33,11 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-menu-item><a class="dropdown-link" href="https://vite.dev/">Vite</a></el-dropdown-menu-item>
-                <el-dropdown-menu-item><a class="dropdown-link" href="https://vuejs.org/">Vue3</a></el-dropdown-menu-item>
-                <el-dropdown-menu-item><a class="dropdown-link" href="https://element-plus.org/en-US/">Element Plus</a></el-dropdown-menu-item>
-                <el-dropdown-menu-item><a class="dropdown-link" href="https://vue-echarts.dev/">vue-echarts</a></el-dropdown-menu-item>
-                <el-dropdown-menu-item><a class="dropdown-link" href="https://polygon.io/">Polygon API</a></el-dropdown-menu-item>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://vite.dev/" target="_blank" rel="noopener noreferrer">Vite</a></el-dropdown-menu-item>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://vuejs.org/" target="_blank" rel="noopener noreferrer">Vue3</a></el-dropdown-menu-item>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://element-plus.org/en-US/" target="_blank" rel="noopener noreferrer">Element Plus</a></el-dropdown-menu-item>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://vue-echarts.dev/" target="_blank" rel="noopener noreferrer">vue-echarts</a></el-dropdown-menu-item>
+                <el-dropdown-menu-item><a class="dropdown-link" href="https://polygon.io/" target="_blank" rel="noopener noreferrer">Polygon API</a></el-dropdown-menu-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
