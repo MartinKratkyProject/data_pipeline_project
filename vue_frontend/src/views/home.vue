@@ -106,7 +106,7 @@ h1 {
 }
 
 .stock-table th {
-  background-color: #f4f4f4;
+  background-color: #2426a7;
   font-weight: bold;
 }
 
