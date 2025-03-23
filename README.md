@@ -48,36 +48,36 @@ Project Setup & Installation
 
 3 🔹  Access the Services
 
-🔹 pgAdmin: http://localhost:5050 (User: admin@example.com, Password: admin)
+🔹 pgAdmin: http://localhost:5050 (User=admin@example.com, Password=admin)
 
  🔹   Create a new server:
-        NAME: postgres_test,
-        HOST: postgres,
-        PORT: 5432,
-        DATABASE: airflow,
-        USERNAME: airflow,
-        PASSWORD: airflow
+        NAME=postgres_test,
+        HOST=postgres,
+        PORT=5432,
+        DATABASE=airflow,
+        USERNAME=airflow,
+        PASSWORD=airflow
 
-🔹 Airflow UI: http://localhost:8080 (User: airflow, Password: airflow)
+🔹 Airflow UI: http://localhost:8080 (User=airflow, Password=airflow)
 
  🔹   Create a new connection: postgres:
-        Connection Id: postgres_default,
-        Connection Type: Postgres,
-        Host: postgres,
-        Database: airflow,
-        Login: airflow,
-        Password: airflow,
-        Port: 5432
+        Connection Id=postgres_default,
+        Connection Type=Postgres,
+        Host=postgres,
+        Database=airflow,
+        Login=airflow,
+        Password=airflow,
+        Port=5432
 
   🔹  redis:
-        Connection Id: redis_default,
-        Connection Type: Redis,
-        Host: redis,
-        Login: ,
-        Password: ,
-        Port: 6379
+        Connection Id=redis_default,
+        Connection Type=Redis,
+        Host=redis,
+        Login=,
+        Password=,
+        Port=6379
 
   🔹  Create new variables:
-        polygon_api_key     >  your_api_key ,
-        sqlalchemy_pg_conn  > postgresql+psycopg2://airflow:airflow@postgres:5432/postgres ,
-        tickers             >  ["AAPL", "TSLA", "NVDA", "GOOGL", "AMZN"]
+        polygon_api_key     =your_api_key ,
+        sqlalchemy_pg_conn  =postgresql+psycopg2://airflow:airflow@postgres:5432/postgres,
+        tickers             =["AAPL", "TSLA", "NVDA", "GOOGL", "AMZN"]
