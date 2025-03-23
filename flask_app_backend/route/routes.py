@@ -4,12 +4,17 @@ from model.ticker_data.amzn_ticker_data import get_amzn_data
 from model.ticker_data.googl_ticker_data import get_googl_data
 from model.ticker_data.nvda_ticker_data import get_nvda_data
 from model.ticker_data.tsla_ticker_data import get_tsla_data
+from model.home_ticker_data import get_home_data
 
 routes_bp = Blueprint('routes', __name__)
 
 @routes_bp.route('/')
 def index():
     return "Welcome to the backend"
+
+@routes_bp.route('/home', methods=['GET'])
+def get_home_route():
+    return get_home_data()
 
 @routes_bp.route('/aapl', methods=['GET'])
 def get_aapl_route():
