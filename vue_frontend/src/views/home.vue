@@ -6,30 +6,32 @@
     <div v-if="home_data.length">
       <p class="record-date">Latest Data: {{ formattedRecordDate }}</p>
 
-      <table class="stock-table">
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th>Daily Change (%)</th>
-            <th>Weekly Change (%)</th>
-            <th>Monthly Change (%)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in home_data" :key="item.ticker">
-            <td>{{ item.ticker }}</td>
-            <td :class="getClass(item.dailyChange)">
-              {{ item.dailyChange.toFixed(2) }}%
-            </td>
-            <td :class="getClass(item.weeklyChange)">
-              {{ item.weeklyChange.toFixed(2) }}%
-            </td>
-            <td :class="getClass(item.monthlyChange)">
-              {{ item.monthlyChange.toFixed(2) }}%
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Daily Change (%)</th>
+              <th>Weekly Change (%)</th>
+              <th>Monthly Change (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in home_data" :key="item.ticker">
+              <td>{{ item.ticker }}</td>
+              <td :class="getClass(item.dailyChange)">
+                {{ item.dailyChange.toFixed(2) }}%
+              </td>
+              <td :class="getClass(item.weeklyChange)">
+                {{ item.weeklyChange.toFixed(2) }}%
+              </td>
+              <td :class="getClass(item.monthlyChange)">
+                {{ item.monthlyChange.toFixed(2) }}%
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <p v-else class="loading">Loading stock data...</p>
   </div>
@@ -101,51 +103,75 @@ const formattedRecordDate = computed(() => {
 
 <style scoped>
 .container {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
   padding: 20px;
   text-align: center;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
 }
 
 h1 {
-  color: #333;
+  color: #dcdde1;
+  margin-bottom: 10px;
 }
 
 .timestamp, .record-date {
   font-size: 1.2rem;
-  color: #666;
+  color: #a4b0be;
   margin-bottom: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .stock-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  background: #2f2f4f;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .stock-table th, .stock-table td {
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 12px;
   text-align: center;
+  border-bottom: 1px solid #444;
 }
 
 .stock-table th {
-  background-color: #2426a7;
+  background-color: rgb(96, 65, 210);
+  color: white;
   font-weight: bold;
 }
 
+.stock-table tr:nth-child(even) {
+  background-color: #3a3a6d;
+}
+
+.stock-table tr:nth-child(odd) {
+  background-color: #2f2f4f;
+}
+
+.stock-table tr:hover {
+  background-color: #4b4b8f;
+}
+
 .positive {
-  color: green;
+  color: #2ecc71;
   font-weight: bold;
 }
 
 .negative {
-  color: red;
+  color: #e74c3c;
   font-weight: bold;
 }
 
 .loading {
   font-size: 1.2rem;
-  color: #999;
+  color: #95a5a6;
 }
 </style>
