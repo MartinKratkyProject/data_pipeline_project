@@ -61,7 +61,7 @@ import { HomeFilled, TrendCharts, Cpu, InfoFilled } from "@element-plus/icons-vu
 
 <style scoped>
 nav {
-  background-color: rgb(41, 15, 136);
+  background-color: rgb(96, 65, 210);
   padding: 1em 2em;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
