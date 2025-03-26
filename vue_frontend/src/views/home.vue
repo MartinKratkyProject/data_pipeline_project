@@ -10,18 +10,22 @@
         <thead>
           <tr>
             <th>Ticker</th>
-            <th>Open</th>
-            <th>Close</th>
-            <th>Change (%)</th>
+            <th>Daily Change (%)</th>
+            <th>Weekly Change (%)</th>
+            <th>Monthly Change (%)</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in home_data" :key="item.ticker">
             <td>{{ item.ticker }}</td>
-            <td>${{ item.open.toFixed(2) }}</td>
-            <td>${{ item.close.toFixed(2) }}</td>
-            <td :class="{ positive: item.close - item.open >= 0, negative: item.close - item.open < 0 }">
-              {{ ((item.close - item.open) / item.open * 100).toFixed(2) }}%
+            <td :class="getClass(item.dailyChange)">
+              {{ item.dailyChange.toFixed(2) }}%
+            </td>
+            <td :class="getClass(item.weeklyChange)">
+              {{ item.weeklyChange.toFixed(2) }}%
+            </td>
+            <td :class="getClass(item.monthlyChange)">
+              {{ item.monthlyChange.toFixed(2) }}%
             </td>
           </tr>
         </tbody>
@@ -35,7 +39,14 @@
 import { ref, onMounted, computed } from 'vue';
 
 const currentTime = ref(new Date().toLocaleTimeString());
-const currentDate = ref(new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+const currentDate = ref(
+  new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+);
 const home_data = ref([]);
 
 onMounted(() => {
@@ -53,24 +64,37 @@ const fetchData = async () => {
       throw new Error('Failed to fetch data');
     }
     
-    home_data.value = await response.json();
+    const data = await response.json();
+    home_data.value = data.map(item => ({
+      ...item,
+      dailyChange: calculatePercentageChange(item.open, item.close),
+      weeklyChange: calculatePercentageChange(item.week_open, item.close),
+      monthlyChange: calculatePercentageChange(item.month_open, item.close),
+    }));
   } catch (error) {
     console.error(error);
   }
 };
 
-// Format the date of the latest record
+const calculatePercentageChange = (open, close) => {
+  return open ? ((close - open) / open) * 100 : 0;
+};
+
+const getClass = (value) => {
+  return value >= 0 ? 'positive' : 'negative';
+};
+
 const formattedRecordDate = computed(() => {
   if (home_data.value.length === 0) return "No data available";
 
-  const rawDate = home_data.value[0].record_date; // Example: "2024-03-22"
+  const rawDate = home_data.value[0].record_date;
   const dateObj = new Date(rawDate);
   
   return dateObj.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
 });
 </script>
