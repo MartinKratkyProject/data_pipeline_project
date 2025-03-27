@@ -1,118 +1,177 @@
 <template>
-    <div class="container">
-      <h1>Stock Dashboard</h1>
-      
-      <!-- Stock Summary -->
-      <div class="stock-summary">
-        <div class="summary-card" v-for="(stock, ticker) in stockData" :key="ticker">
-          <h3>{{ ticker.toUpperCase() }}</h3>
-          <p>Open: {{ stock.open }}</p>
-          <p>High: {{ stock.high }}</p>
-          <p>Low: {{ stock.low }}</p>
-          <p>Close: {{ stock.close }}</p>
-          <p>Volume: {{ stock.volume }}</p>
-        </div>
-      </div>
-  
-      <!-- Transactions Table -->
+  <div class="container">
+    <h1>Stock Dashboard</h1>
+    <p class="timestamp">{{ currentDate }} | {{ currentTime }}</p>
+
+    <div v-if="home_data.length">
+      <p class="record-date">Latest Data: {{ formattedRecordDate }}</p>
+
       <div class="table-container">
-        <h2>Recent Transactions</h2>
-        <table>
+        <table class="stock-table">
           <thead>
             <tr>
-              <th>Date</th>
               <th>Ticker</th>
-              <th>Open</th>
-              <th>High</th>
-              <th>Low</th>
-              <th>Close</th>
-              <th>Volume</th>
+              <th>Daily Change (%)</th>
+              <th>Weekly Change (%)</th>
+              <th>Monthly Change (%)</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in transactions" :key="index">
-              <td>{{ item.date }}</td>
-              <td>{{ item.ticker.toUpperCase() }}</td>
-              <td>{{ item.open }}</td>
-              <td>{{ item.high }}</td>
-              <td>{{ item.low }}</td>
-              <td>{{ item.close }}</td>
-              <td>{{ item.volume }}</td>
+            <tr v-for="item in home_data" :key="item.ticker">
+              <td>{{ item.ticker }}</td>
+              <td :class="getClass(item.dailyChange)">
+                {{ item.dailyChange.toFixed(2) }}%
+              </td>
+              <td :class="getClass(item.weeklyChange)">
+                {{ item.weeklyChange.toFixed(2) }}%
+              </td>
+              <td :class="getClass(item.monthlyChange)">
+                {{ item.monthlyChange.toFixed(2) }}%
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-  </template>
+    <p v-else class="loading">Loading stock data...</p>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, computed } from 'vue';
+
+const currentTime = ref(new Date().toLocaleTimeString());
+const currentDate = ref(
+  new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+);
+const home_data = ref([]);
+
+onMounted(() => {
+  setInterval(() => {
+    currentTime.value = new Date().toLocaleTimeString();
+  }, 1000);
+
+  fetchData();
+});
+
+const fetchData = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/home');
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+    
+    const data = await response.json();
+    home_data.value = data.map(item => ({
+      ...item,
+      dailyChange: calculatePercentageChange(item.open, item.close),
+      weeklyChange: calculatePercentageChange(item.week_open, item.close),
+      monthlyChange: calculatePercentageChange(item.month_open, item.close),
+    }));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const calculatePercentageChange = (open, close) => {
+  return open ? ((close - open) / open) * 100 : 0;
+};
+
+const getClass = (value) => {
+  return value >= 0 ? 'positive' : 'negative';
+};
+
+const formattedRecordDate = computed(() => {
+  if (home_data.value.length === 0) return "No data available";
+
+  const rawDate = home_data.value[0].record_date;
+  const dateObj = new Date(rawDate);
   
-  <script setup>
-  import { ref } from 'vue';
-  
-  // Dummy stock data for multiple tickers
-  const stockData = ref({
-    apple: { open: 224.5, high: 225.69, low: 221.33, close: 221.69, volume: 37595470 },
-    amazon: { open: 171.09, high: 174.21, low: 170.97, close: 173.66, volume: 53006286 },
-    google: { open: 244.33, high: 244.98, low: 239.13, close: 240.36, volume: 40678483 },
-    nvidia: { open: 315.45, high: 320.78, low: 310.12, close: 318.67, volume: 48231784 },
-    tesla: { open: 189.55, high: 192.10, low: 185.90, close: 190.22, volume: 67341258 }
+  return dateObj.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
-  
-  // Dummy transaction data for multiple tickers
-  const transactions = ref([
-    { date: "2024-10-07", ticker: "apple", open: 224.5, high: 225.69, low: 221.33, close: 221.69, volume: 37595470 },
-    { date: "2023-10-04", ticker: "amazon", open: 171.09, high: 174.21, low: 170.97, close: 173.66, volume: 53006286 },
-    { date: "2025-02-26", ticker: "google", open: 244.33, high: 244.98, low: 239.13, close: 240.36, volume: 40678483 },
-    { date: "2025-01-15", ticker: "nvidia", open: 315.45, high: 320.78, low: 310.12, close: 318.67, volume: 48231784 },
-    { date: "2024-11-30", ticker: "tesla", open: 189.55, high: 192.10, low: 185.90, close: 190.22, volume: 67341258 }
-  ]);
-  </script>
-  
-  <style scoped>
-  .container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 20px;
-  }
-  
-  h1, h2 {
-    text-align: center;
-    color: #333;
-  }
-  
-  .stock-summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .summary-card {
-    background: #1f068f;
-    padding: 15px;
-    text-align: center;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .table-container {
-    margin-top: 20px;
-    overflow-x: auto;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  table, th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-  }
-  
-  th {
-    background: #42b983;
-    color: white;
-  }
-  </style>
-  
+});
+</script>
+
+<style scoped>
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+}
+
+h1 {
+  color: #dcdde1;
+  margin-bottom: 10px;
+}
+
+.timestamp, .record-date {
+  font-size: 1.2rem;
+  color: #a4b0be;
+  margin-bottom: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #2f2f4f;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.stock-table th, .stock-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+
+.stock-table th {
+  background-color: rgb(96, 65, 210);
+  color: white;
+  font-weight: bold;
+}
+
+.stock-table tr:nth-child(even) {
+  background-color: #3a3a6d;
+}
+
+.stock-table tr:nth-child(odd) {
+  background-color: #2f2f4f;
+}
+
+.stock-table tr:hover {
+  background-color: #4b4b8f;
+}
+
+.positive {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+.negative {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.loading {
+  font-size: 1.2rem;
+  color: #95a5a6;
+}
+</style>
