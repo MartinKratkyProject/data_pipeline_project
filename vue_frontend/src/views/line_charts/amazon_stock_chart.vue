@@ -2,7 +2,6 @@
   <div class="app-container">
     <div class="header">
       <h1>Amazon Stock Tracker</h1>
-      <p>Daily open, close, high, and low prices visualized</p>
       <p class="timestamp">{{ currentDate }} | {{ currentTime }}</p>
       <p class="record-date">Latest Stock Data: {{ formattedRecordDate }}</p>
     </div>
@@ -11,11 +10,43 @@
     <div v-else-if="!open.length" class="loading">Loading...</div>
     
     <div v-else class="chart-wrapper">
-      <div class="stats-card">
-        <p><strong>Open:</strong> {{ latest.open }}</p>
-        <p><strong>Close:</strong> {{ latest.close }}</p>
-        <p><strong>High:</strong> {{ latest.high }}</p>
-        <p><strong>Low:</strong> {{ latest.low }}</p>
+      <div class="stats-card-row">
+        <div class="stat-item">
+          <strong>Open:</strong> {{ latest.open }}
+          <span
+            :style="{ color: getArrowColor(latest.open, previous.open) }"
+            :title="`Previous: ${formatFullDate(previous.record_date)} — ${previous.open}`"
+          >
+            {{ getArrow(latest.open, previous.open) }}
+          </span>
+        </div>
+        <div class="stat-item">
+          <strong>Close:</strong> {{ latest.close }}
+          <span
+            :style="{ color: getArrowColor(latest.close, previous.close) }"
+            :title="`Previous: ${formatFullDate(previous.record_date)} — ${previous.close}`"
+          >
+            {{ getArrow(latest.close, previous.close) }}
+          </span>
+        </div>
+        <div class="stat-item">
+          <strong>High:</strong> {{ latest.high }}
+          <span
+            :style="{ color: getArrowColor(latest.high, previous.high) }"
+            :title="`Previous: ${formatFullDate(previous.record_date)} — ${previous.high}`"
+          >
+            {{ getArrow(latest.high, previous.high) }}
+          </span>
+        </div>
+        <div class="stat-item">
+          <strong>Low:</strong> {{ latest.low }}
+          <span
+            :style="{ color: getArrowColor(latest.low, previous.low) }"
+            :title="`Previous: ${formatFullDate(previous.record_date)} — ${previous.low}`"
+          >
+            {{ getArrow(latest.low, previous.low) }}
+          </span>
+        </div>
       </div>
 
       <v-chart :option="chartOption" class="chart" />
@@ -43,8 +74,29 @@ const error = ref(null);
 const chartOption = ref({});
 
 const latest = computed(() => stock_data.value[stock_data.value.length - 1] || {});
+const previous = computed(() => {
+  const len = stock_data.value.length;
+  return len > 1 ? stock_data.value[len - 2] : {};
+});
 
-// Time/date logic
+const getArrow = (current, prev) => {
+  if (prev === undefined || current === undefined) return '';
+  return current > prev ? '▲' : current < prev ? '▼' : '';
+};
+
+const getArrowColor = (current, prev) => {
+  if (prev === undefined || current === undefined) return '';
+  return current > prev ? 'green' : current < prev ? 'red' : 'gray';
+};
+
+const formatFullDate = (rawDate) =>
+  new Date(rawDate).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
 const currentTime = ref(new Date().toLocaleTimeString());
 const currentDate = ref(
   new Date().toLocaleDateString('en-US', {
@@ -90,30 +142,22 @@ const fetchData = async () => {
 
     chartOption.value = {
       backgroundColor: '#242424',
-      textStyle: {
-        color: '#f5f5f5'
-      },
+      textStyle: { color: '#f5f5f5' },
       title: {
         text: 'Amazon Stock Prices',
         left: 'center',
-        textStyle: {
-          color: '#ffffff'
-        }
+        textStyle: { color: '#ffffff' }
       },
       tooltip: {
         trigger: 'axis',
         backgroundColor: '#333',
         borderColor: '#888',
-        textStyle: {
-          color: '#ffffff'
-        }
+        textStyle: { color: '#ffffff' }
       },
       legend: {
         bottom: 0,
         left: 'center',
-        textStyle: {
-          color: '#f0f0f0'
-        }
+        textStyle: { color: '#f0f0f0' }
       },
       xAxis: {
         type: 'category',
@@ -127,41 +171,18 @@ const fetchData = async () => {
         max: Math.ceil(Math.max(...high.value) / 100) * 100,
         axisLine: { lineStyle: { color: '#888' } },
         axisLabel: { color: '#f0f0f0' },
-        splitLine: {
-          lineStyle: {
-            color: '#444'
-          }
-        }
+        splitLine: { lineStyle: { color: '#444' }  }
       },
       series: [
-        {
-          name: 'Open Price',
-          data: open.value,
-          type: 'line',
-          smooth: true,
-        },
-        {
-          name: 'Close Price',
-          data: close.value,
-          type: 'line',
-          smooth: true,
-        },
-        {
-          name: 'High Price',
-          data: high.value,
-          type: 'line',
-          smooth: true,
-        },
-        {
-          name: 'Low Price',
-          data: low.value,
-          type: 'line',
-          smooth: true,
-        },
+        { name: 'Open Price', data: open.value, type: 'line', smooth: true},
+        { name: 'Close Price', data: close.value, type: 'line', smooth: true},
+        { name: 'High Price', data: high.value, type: 'line', smooth: true},
+        { name: 'Low Price', data: low.value, type: 'line', smooth: true},
       ],
     };
 
   } catch (err) {
+    console.error('Fetch error:', err);
     error.value = err.message;
   }
 };
@@ -173,7 +194,6 @@ const fetchData = async () => {
   flex-direction: column;
   align-items: center;
   padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
   background: #181818;
   color: #f0f0f0;
   min-height: 100vh;
@@ -181,11 +201,7 @@ const fetchData = async () => {
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
-}
-
-.header h1 {
-  color: #ffffff;
+  margin-bottom: 1.5rem;
 }
 
 .header p {
@@ -218,24 +234,18 @@ const fetchData = async () => {
   margin-top: 1.5rem;
 }
 
-.stats-card {
-  background: #2a2a2a;
+.stats-card-row {
+  display: flex;
   border-radius: 12px;
   padding: 1rem 2rem;
-  margin-bottom: 1rem;
-  text-align: left;
-  width: 100%;
-  color: #f5f5f5;
-  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.05);
+  background-color: rgb(96, 65, 210);
+  gap: 3rem;
 }
 
-.stats-card h2 {
-  color: #ffffff;
-}
-
-.stats-card p {
-  margin: 0.2rem 0;
-  color: #dddddd;
+.stat-item span {
+  margin-left: 6px;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
 .loading {
