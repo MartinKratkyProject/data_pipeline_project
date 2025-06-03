@@ -44,7 +44,7 @@ Project Setup & Installation
 
 3 🔹  Access the Services
 
-🔹 pgAdmin: http://localhost:5050 (User=admin@example.com, Password=admin)
+🔹 pgAdmin: http://localhost:5050 (User=admin@admin.com, Password=admin)
 
  🔹   Create a new server:
         NAME=postgres_test,
