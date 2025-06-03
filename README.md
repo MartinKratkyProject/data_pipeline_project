@@ -34,10 +34,6 @@ Flower          Monitoring Airflow tasks
     001_airflow_postgres_load_new_data.py   → Extracts and loads the latest stock data.
 
 
-Backend Structure
-# here will be technical documentation of the backend app......
-
-
 Project Setup & Installation
 
 🔹 Prerequisites: Install Docker & Docker Compose; Get a Polygon API key
