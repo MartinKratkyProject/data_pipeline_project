@@ -5,6 +5,8 @@ from airflow.operators.python import PythonOperator
 from polygon import RESTClient
 from sqlalchemy import create_engine
 from airflow.models import Variable
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+
 
 default_args = {
     'owner': 'admin',
@@ -74,5 +76,12 @@ with DAG(
         python_callable = fetch_data, 
     )
 
+    trigger_redeploy_views_task = TriggerDagRunOperator(
+        task_id="trigger_redeploy_views",
+        trigger_dag_id="redeploy_views",  # This should be the DAG ID of the DAG you want to trigger
+        wait_for_completion=False  # Set to True if you want to wait for it to finish
+    )
+
+
     # dependencies
-    fetch_data_task
+    fetch_data_task >> trigger_redeploy_views_task
