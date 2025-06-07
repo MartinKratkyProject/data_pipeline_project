@@ -3,6 +3,12 @@
 echo "Waiting for Airflow DB to be ready..."
 airflow db upgrade
 
+echo "Unpausing DAGs..."
+
+airflow dags unpause create_table_and_store_data
+airflow dags unpause load_new_data
+airflow dags unpause redeploy_views
+
 if ! airflow connections get 'postgres_default' &>/dev/null; then
     echo "Creating Postgres connection..."
     airflow connections add 'postgres_default' \
