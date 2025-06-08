@@ -37,11 +37,12 @@ def fetch_latest_record(table_name):
 
 # function for fetching data from polygon API. Called by fetch_data_task task
 def fetch_data():
-    
     polygon_api_key = Variable.get("polygon_api_key")
     client = RESTClient(polygon_api_key)
-
     tickers = Variable.get("tickers", deserialize_json=True)
+
+    engine = create_connection_to_postgres()
+
     for ticker in tickers:
         aggs = []
         today = datetime.now()
@@ -49,17 +50,37 @@ def fetch_data():
         from_date = start.strftime('%Y-%m-%d')
         to_date = today.strftime('%Y-%m-%d')
 
-        for day in client.get_aggs(ticker=ticker, multiplier=1, timespan='day', from_= from_date, to= to_date):
+        # Check if table exists
+        table_check_query = f"""
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' AND table_name = '{ticker}'
+            );
+        """
+        with engine.connect() as conn:
+            result = conn.execute(table_check_query).scalar()
+        
+        if not result:
+            print(f"Table '{ticker}' does not exist. Creating new table...")
+            sample_aggs = list(client.get_aggs(ticker=ticker, multiplier=1, timespan='day', from_=from_date, to=to_date, limit=1))
+            if sample_aggs:
+                df_sample = pd.DataFrame(sample_aggs)
+                df_sample.head(0).to_sql(ticker, con=engine, index=False, if_exists='replace')  # create empty table with schema
+            else:
+                print(f"No data returned for {ticker}. Skipping...")
+                continue
+
+        for day in client.get_aggs(ticker=ticker, multiplier=1, timespan='day', from_=from_date, to=to_date):
             aggs.append(day)
 
         df = pd.DataFrame(aggs)
 
         latest_record = fetch_latest_record(ticker)
-
         df_filtered = df[df['timestamp'] > latest_record]
 
-        engine = create_connection_to_postgres()
-        df_filtered.to_sql(ticker, con=engine, if_exists='append', index=False)
+        if not df_filtered.empty:
+            df_filtered.to_sql(ticker, con=engine, if_exists='append', index=False)
+
 # DAG
 with DAG(
     dag_id = 'load_new_data',
@@ -78,10 +99,9 @@ with DAG(
 
     trigger_redeploy_views_task = TriggerDagRunOperator(
         task_id="trigger_redeploy_views",
-        trigger_dag_id="redeploy_views",  # This should be the DAG ID of the DAG you want to trigger
-        wait_for_completion=False  # Set to True if you want to wait for it to finish
+        trigger_dag_id="redeploy_views",
+        wait_for_completion=False
     )
-
 
     # dependencies
     fetch_data_task >> trigger_redeploy_views_task
