@@ -11,13 +11,13 @@ ETL Pipeline Architecture
 
 Technology      Purpose
 
-Apache Airflow > Orchestrating ETL workflows;
-Polygon API > Fetching stock market data;
-PostgreSQL > Storing processed data;
-Docker > Containerizing services;
-pgAdmin > Managing PostgreSQL database;
-Redis > Message broker for Airflow;
-Flower > Monitoring Airflow tasks;
+Apache Airflow  > Orchestrating ETL workflows;
+Polygon API     > Fetching stock market data;
+PostgreSQL      > Storing processed data;
+Docker          > Containerizing services;
+pgAdmin         > Managing PostgreSQL database;
+Redis           > Message broker for Airflow;
+Flower          > Monitoring Airflow tasks;
 
 🔹 Step 1: Extraction
     Fetch historical stock data from Polygon API.
@@ -50,4 +50,5 @@ Once you have this setup ready, proceed with these steps:
 
 Service credencials:
 pgAdmin: http://localhost:5050 (User=admin@admin.com, Password=admin)
+PG server (password=airflow)
 Airflow UI: http://localhost:8080 (User=airflow, Password=airflow)
