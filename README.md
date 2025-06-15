@@ -9,7 +9,7 @@ The second part of this project is a full-stack web application that utilizes th
 
 ETL Pipeline Architecture
 
-Technology      Purpose
+Technology      > Purpose
 
 Apache Airflow  > Orchestrating ETL workflows;
 Polygon API     > Fetching stock market data;
@@ -52,3 +52,15 @@ Service credencials:
 pgAdmin: http://localhost:5050 (User=admin@admin.com, Password=admin)
 PG server (password=airflow)
 Airflow UI: http://localhost:8080 (User=airflow, Password=airflow)
+
+
+
+Troubleshooting 
+
+Here are some tips to help you troubleshoot potential issues when running this project.
+
+1. Data not available in UI.
+    In case you opend the frontend webpage (http://localhost:8081/) and you don't see any data, only the message "Loading stock data...", go to http://localhost:8080/dags/load_new_data/grid and trigger this DAG manually. 
+    (This may happen if you are using the default, free of charge Polygon API key due to number of connections restriction. You can also encounter this issue when you are running the project for the first time).
+2. Missing variables and connections in Airflow UI.
+    Sometimes, the Airflow instance is created without necessary variables and connections. In this case, go to \data_pipeline_project\postgres_airflow\scripts\create_connections.sh file and make sure it's using LF end of the line sequence instead of CRLF. After you do the change, run docker build command again.
